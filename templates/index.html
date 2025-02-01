@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Data Visualizations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        img {
+            width: 80%;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flask Data Visualizations</h1>
+
+    <h2>Transaction Value Distribution</h2>
+    <img src="{{ url_for('static', filename='transaction_distribution.png') }}" alt="Transaction Distribution">
+
+    <h2>Total Emissions by Category</h2>
+    <img src="{{ url_for('static', filename='emissions_by_category.png') }}" alt="Emissions by Category">
+
+    <h2>Emission Trends Over Time</h2>
+    <img src="{{ url_for('static', filename='emission_trends.png') }}" alt="Emission Trends">
+
+    <h2>Cost vs. Transaction Value</h2>
+    <img src="{{ url_for('static', filename='cost_vs_transaction.png') }}" alt="Cost vs Transaction">
+
+    <h2>Top Emissions by Source and Destination</h2>
+    <img src="{{ url_for('static', filename='top_emissions.png') }}" alt="Top Emissions">
+
+    <h2>Emissions by Department</h2>
+    <img src="{{ url_for('static', filename='emissions_by_department.png') }}" alt="Emissions by Department">
+</body>
+</html>
