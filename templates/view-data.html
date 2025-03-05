@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Data - Data Analytics</title>
+
+    <!-- Bootstrap & Custom CSS -->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>
+<body>
+
+    <div class="container mt-4">
+        <!-- Responsive Button Group at the Top -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ url_for('browse_data') }}" class="btn btn-primary">Back to Uploaded Files</a>
+                <a href="{{ url_for('clean_data', file_id=file.id) }}" class="btn btn-warning">Clean Data</a>
+                <form action="{{ url_for('delete_file', file_id=file.id) }}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this file?');">
+                        Delete File
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- File Name -->
+        <h2>{{ file.filename }}</h2>
+        <h4>Contents of the uploaded file:</h4>
+
+        <!-- Table Content -->
+        <div class="table-responsive">
+            {{ table | safe }}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenAnalytica</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        main {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+        }
+        .sidebar {
+            height: 100%;
+            width: 280px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+        .content-wrapper {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+        }
+        .report-card {
+            height: 100%;
+        }
+        .report-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: white;
+            border-radius: 12px;
+            height: 100%;
+        }
+        .report-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .report-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .chart-preview {
+            height: 200px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin: 1rem 0;
+            padding: 1rem;
+        }
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        .tag.environmental {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .tag.social {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .tag.governance {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .chart-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .key-metric {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .key-metric:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .key-metric h3 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .key-metric p {
+            margin: 0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        .modal-header {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 16px 16px 0 0;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5457ea 0%, #7d4ee4 100%);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-light">
+<main class="d-flex">
+    <!-- Sidebar -->
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+            <span class="fs-4">GreenAnalytica</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="index" class="nav-link link-dark">
+                    <i class="bi bi-house-door me-2"></i>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="browse-data" class="nav-link link-dark">
+                    <i class="bi bi-search me-2"></i>
+                    Browse Data
+                </a>
+            </li>
+            <li>
+                <a href="database" class="nav-link link-dark">
+                    <i class="bi bi-plus-circle me-2"></i>
+                    Add Data Source
+                </a>
+            </li>
+            
+            <li class="mt-4 mb-2">
+                <small class="text-muted px-3 fw-bold">REPORTS</small>
+            </li>
+            <li>
+                <a href="analysis-detail" class="nav-link active" aria-current="page">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Analytics
+                </a>
+            </li>
+            <li>
+                <a href="personal-collection" class="nav-link link-dark">
+                    <i class="bi bi-collection me-2"></i>
+                    My Reports
+                </a>
+            </li>
+        </ul>
+        <hr>
+        
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                <strong>Johnny</strong>
+            </a>
+            <ul class="dropdown-menu text-small shadow">
+                <li><a class="dropdown-item" href="#">New Report</a></li>
+                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="login.html">Sign out</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-grow-1 p-4">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>Analysis Reports</h4>
+                 <button class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>Create New Report
+                </button> 
+            </div>
+
+            <!-- Reports Grid -->
+            <div class="row g-4"> 
+                <!-- Environmental Report Card -->
+                <div class="col-md-4" data-bs-toggle="modal" data-bs-target="#reportModal1">
+                    <div class="card report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Carbon Emissions Analysis</h5>
+                                <span class="tag environmental">Environmental</span>
+                            </div>
+                            <div class="chart-preview">
+                                <canvas id="previewChart1"></canvas>
+                            </div>
+                            <div class="report-meta d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-clock me-1"></i>Updated 2 days ago</span>
+                                <span><i class="bi bi-eye me-1"></i>24 views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+
+                <!-- Social Report Card -->
+               <!-- <div class="col-md-4" data-bs-toggle="modal" data-bs-target="#reportModal2">
+                    <div class="card report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Employee Engagement</h5>
+                                <span class="tag social">Social</span>
+                            </div>
+                            <div class="chart-preview">
+                                <canvas id="previewChart2"></canvas>
+                            </div>
+                            <div class="report-meta d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-clock me-1"></i>Updated 5 days ago</span>
+                                <span><i class="bi bi-eye me-1"></i>18 views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- Governance Report Card -->
+                <!-- <div class="col-md-4" data-bs-toggle="modal" data-bs-target="#reportModal3">
+                    <div class="card report-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Board Diversity</h5>
+                                <span class="tag governance">Governance</span>
+                            </div>
+                            <div class="chart-preview">
+                                <canvas id="previewChart3"></canvas>
+                            </div>
+                            <div class="report-meta d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-clock me-1"></i>Updated 1 week ago</span>
+                                <span><i class="bi bi-eye me-1"></i>32 views</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</main>
+
+<!-- Report Detail Modal -->
+<div class="modal fade" id="reportModal1" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-1">Carbon Emissions Analysis</h5>
+                    <div class="d-flex align-items-center">
+                        <span class="tag environmental me-3">Environmental</span>
+                        <span class="report-meta">
+                            <i class="bi bi-clock me-1"></i>Last updated: March 15, 2024
+                        </span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Key Metrics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>-15.2%</h3>
+                            <p>YoY Reduction</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>142.5</h3>
+                            <p>CO2e (tons)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>87%</h3>
+                            <p>Target Progress</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>2025</h3>
+                            <p>Target Year</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="chart-container">
+                    <canvas id="detailChart1"></canvas>
+                </div>
+
+                <!-- Analysis Details -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="mb-3">Key Findings</h5>
+                        <div class="mb-4">
+                            <h6>Significant Reduction in Scope 2 Emissions</h6>
+                            <p>The company has achieved a 15.2% year-over-year reduction in Scope 2 emissions, primarily driven by increased use of renewable energy sources and improved energy efficiency measures.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h6>Progress Towards 2025 Target</h6>
+                            <p>Currently at 87% of our 2025 emissions reduction target, indicating we are ahead of schedule in meeting our sustainability goals.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Recommendations</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Expand renewable energy procurement
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Implement energy efficiency programs
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Update equipment maintenance schedule
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-download me-2"></i>Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Social Report Modal -->
+<div class="modal fade" id="reportModal2" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-1">Employee Engagement</h5>
+                    <div class="d-flex align-items-center">
+                        <span class="tag social me-3">Social</span>
+                        <span class="report-meta">
+                            <i class="bi bi-clock me-1"></i>Last updated: March 12, 2024
+                        </span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Key Metrics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>92%</h3>
+                            <p>Engagement Rate</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>+8%</h3>
+                            <p>YoY Growth</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>4.5/5</h3>
+                            <p>Satisfaction Score</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>95%</h3>
+                            <p>Response Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="chart-container">
+                    <canvas id="detailChart2"></canvas>
+                </div>
+
+                <!-- Analysis Details -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="mb-3">Key Findings</h5>
+                        <div class="mb-4">
+                            <h6>High Employee Satisfaction</h6>
+                            <p>Employee satisfaction scores have increased significantly, with an average rating of 4.5 out of 5, representing an 8% improvement from last year.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h6>Strong Engagement Metrics</h6>
+                            <p>92% engagement rate indicates strong employee participation and involvement in company initiatives.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Action Items</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Enhance training programs
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Implement feedback system
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Schedule team building events
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-download me-2"></i>Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Governance Report Modal -->
+<div class="modal fade" id="reportModal3" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title mb-1">Board Diversity</h5>
+                    <div class="d-flex align-items-center">
+                        <span class="tag governance me-3">Governance</span>
+                        <span class="report-meta">
+                            <i class="bi bi-clock me-1"></i>Last updated: March 10, 2024
+                        </span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Key Metrics -->
+                <div class="row g-4 mb-4">
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>75%</h3>
+                            <p>Women Representation</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>60%</h3>
+                            <p>Minority Representation</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>4.5/5</h3>
+                            <p>Board Satisfaction</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="key-metric">
+                            <h3>90%</h3>
+                            <p>Diversity Training Completion</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="chart-container">
+                    <canvas id="detailChart3"></canvas>
+                </div>
+
+                <!-- Analysis Details -->
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="mb-3">Key Findings</h5>
+                        <div class="mb-4">
+                            <h6>Progress in Diversity</h6>
+                            <p>The company has made significant progress in increasing women and minority representation on the board, with 75% and 60% respectively.</p>
+                        </div>
+                        <div class="mb-4">
+                            <h6>Board Satisfaction</h6>
+                            <p>Board members are generally satisfied with the company's diversity initiatives, with an average satisfaction score of 4.5 out of 5.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h5 class="mb-3">Recommendations</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Continue promoting diversity in leadership
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Implement more targeted diversity training
+                            </li>
+                            <li class="mb-3">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Review board member performance
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-download me-2"></i>Export Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core CSS -->
+<link href="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 初始化预览图表
+    const previewCharts = ['previewChart1', 'previewChart2', 'previewChart3'].map(id => {
+        return new Chart(document.getElementById(id).getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Mar', 'May', 'Jul', 'Sep', 'Nov'],
+                datasets: [{
+                    data: [120, 115, 110, 105, 100, 95],
+                    borderColor: '#6366f1',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+
+    // 初始化详细图表
+    const detailChart1 = new Chart(document.getElementById('detailChart1').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: '2023 Emissions',
+                data: [120, 115, 110, 105, 100, 95, 90, 88, 85, 82, 80, 78],
+                borderColor: '#6366f1',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    const detailChart2 = new Chart(document.getElementById('detailChart2').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: '2023 Engagement Rate',
+                data: [75, 78, 82, 85, 88, 90, 92, 92, 93, 92, 92, 92],
+                borderColor: '#6366f1',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(99, 102, 241, 0.1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+
+    // 添加图表动画
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function () {
+            const charts = this.querySelectorAll('canvas');
+            charts.forEach(chart => {
+                const chartInstance = Chart.getChart(chart);
+                if (chartInstance) {
+                    chartInstance.update();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html> 
