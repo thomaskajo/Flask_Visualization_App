@@ -1,0 +1,69 @@
+  <h1 class="visually-hidden">ESG</h1>
+
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+      <span class="fs-4">GreenAnalytica</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="index" class="nav-link link-dark{% if current_link == 'index' %} active{% endif %}" aria-current="page">
+          <i class="bi bi-house-door me-2"></i>
+          Home
+        </a>
+      </li>
+      <li>
+        <a href="browse-data" class="nav-link link-dark{% if current_link == 'browse_data' %} active{% endif %}">
+          <i class="bi bi-search me-2"></i>
+          Browse Data
+        </a>
+      </li>
+      <li>
+        <a href="database" class="nav-link link-dark{% if current_link == 'database' %} active{% endif %}">
+          <i class="bi bi-plus-circle me-2"></i>
+          Add Data Source
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('manage_collections') }}">Collections</a>
+      </li>
+
+      <li class="mt-4 mb-2">
+        <small class="text-muted px-3 fw-bold">COLLECTIONS</small>
+      </li>
+      <li>
+        <a href="analytics" class="nav-link link-dark{% if current_link == 'analytics' %} active{% endif %}">
+          <i class="bi bi-graph-up me-2"></i>
+          Our Analytics
+        </a>
+      </li>
+      <li>
+        <a href="personal-collection" class="nav-link link-dark{% if current_link == 'collection' %} active{% endif %}">
+          <i class="bi bi-collection me-2"></i>
+          Personal Collection
+        </a>
+      </li>
+      <li>
+        <a href="dashboard" class="nav-link link-dark{% if current_link == 'dashboard' %} active{% endif %}">
+          <i class="bi bi-speedometer2 me-2"></i>
+          Dashboard
+        </a>
+      </li>
+    </ul>
+    <hr>
+
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+        <!-- <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"> -->
+        <strong>User Name</strong>
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+        <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="login"><i class="bi bi-box-arrow-right me-2"></i>Sign out</a></li>
+      </ul>
+    </div>
+  </div>

@@ -1,0 +1,11 @@
+.btn-primary {
+  background-color: #006400;
+  border-color: #006400;
+}
+.btn-primary:hover {
+  background-color: #005800;
+  border-color: #005500;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  background-color: #006400;
+}

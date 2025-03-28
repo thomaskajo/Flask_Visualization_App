@@ -32,86 +32,68 @@
                 </select>
                 <input type="text" class="form-control mt-2" name="date_format" placeholder="Date format (e.g., %Y-%m-%d)">
             </div>
-            
-            <div class="mb-3">
-                <h5>Normalize Units</h5>
-                <input class="form-check-input" type="checkbox" id="normalize_units" name="normalize_units">
-                <label class="form-check-label" for="normalize_units">Normalize units</label>
-                <select name="normalize_column" class="form-select mt-2">
-                    {% for column in columns %}
-                    <option value="{{ column }}">{{ column }}</option>
-                    {% endfor %}
-                </select>
-                <select name="from_unit" class="form-select mt-2">
-                    <option value="kg">kg</option>
-                    <option value="tons">tons</option>
-                </select>
-                <select name="to_unit" class="form-select mt-2">
-                    <option value="kg">kg</option>
-                    <option value="tons">tons</option>
-                </select>
-            </div>
-            
-            <div class="mb-3">
-                <h5>Remove Outliers</h5>
-                <input class="form-check-input" type="checkbox" id="remove_outliers" name="remove_outliers">
-                <label class="form-check-label" for="remove_outliers">Remove outliers</label>
-                <select name="outlier_method" class="form-select mt-2">
-                    <option value="iqr">IQR Method</option>
-                    <option value="zscore">Z-Score Method</option>
-                </select>
-                <select name="outlier_column" class="form-select mt-2">
-                    {% for column in columns %}
-                    <option value="{{ column }}">{{ column }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="mb-3">
-                <h5>Handle Missing Values</h5>
-                <input class="form-check-input" type="checkbox" id="handle_missing" name="handle_missing">
-                <label class="form-check-label" for="handle_missing">Handle missing values</label>
-                <select name="missing_method" class="form-select mt-2">
-                    <option value="drop">Drop rows</option>
-                    <option value="mean">Fill with mean</option>
-                    <option value="median">Fill with median</option>
-                    <option value="interpolate">Interpolate</option>
-                </select>
-                <select name="missing_column" class="form-select mt-2">
-                    {% for column in columns %}
-                    <option value="{{ column }}">{{ column }}</option>
-                    {% endfor %}
+
+             <!-- Sort Date -->
+             <div class="mb-3">
+                <h5>Sort by Date</h5>
+                <input class="form-check-input" type="checkbox" id="sort_dates" name="sort_dates">
+                <label class="form-check-label" for="sort_dates">Sort by Date</label>
+                <select name="sort_order" class="form-select mt-2">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
                 </select>
             </div>
 
-
-<!-- Filter by Date Range -->
-<div class="mb-3">
-    <h5>Filter by Date Range</h5>
-    <input class="form-check-input" type="checkbox" id="filter_date" name="filter_date">
-    <label class="form-check-label" for="filter_date">Enable Date Range Filter</label>
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <label for="start_date" class="form-label">Start Date:</label>
-            <input type="date" class="form-control" id="start_date" name="start_date">
-        </div>
-        <div class="col-md-6">
-            <label for="end_date" class="form-label">End Date:</label>
-            <input type="date" class="form-control" id="end_date" name="end_date">
-        </div>
-    </div>
-</div>
-
+            
+            <!-- Filter by Date Range Section -->
+            <div class="mb-3">
+                <h5>Filter by Date Range</h5>
+                <input class="form-check-input" type="checkbox" id="filter_date" name="filter_date">
+                <label class="form-check-label" for="filter_date">Enable Date Range Filter</label>
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <label for="start_date" class="form-label">Start Date:</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="end_date" class="form-label">End Date:</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date">
+                    </div>
+                </div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Clean Data</button>
+
+            <!-- Drop Columns Section -->
+            <div class="mb-3">
+                <h5>Drop Columns</h5>
+                <label>Select columns to drop:</label>
+                <div class="row">
+                    {% for column in columns %}
+                        <div class="col-md-4">
+                            <input type="checkbox" name="drop_columns" value="{{ column }}"> {{ column }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger mt-2" name="drop_columns_submit">Drop Selected Columns</button>
+
         </form>
 
+        <!-- Preview of the full data -->
         <h4 class="mt-4">Preview of the data:</h4>
         <div class="table-responsive">
             {{ df.head().to_html(classes='table table-bordered') | safe }}
         </div>
+
+        <!-- Expected Preview Section -->
+        <h4 class="mt-4">Expected Preview:</h4>
+        <div class="table-responsive">
+            {{ expected_df.head().to_html(classes='table table-bordered') | safe }}
+        </div>
         
-        <a href="{{ url_for('view_data', file_id=file.id) }}" class="btn btn-secondary mt-3">Back to View Data</a>
+        <a href="{{ url_for('browse_data', file_id=file.id) }}" class="btn btn-secondary mt-3">Back to Browse Data</a>
     </div>
 
     <!-- Bootstrap JS -->

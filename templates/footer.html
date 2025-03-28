@@ -1,0 +1,11 @@
+
+</main>
+    <script src="{{ url_for('static', filename='assets/js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/sidebars.js') }}"></script>
+    {% for js_file in js_files %}
+    <script src="{{ js_file }}"></script>
+    {% endfor %}
+  </body>
+</html>

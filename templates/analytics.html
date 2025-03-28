@@ -1,0 +1,46 @@
+{% include 'header.html' %}
+{% if headers is none or headers|length < 1 %}
+    <div class="container mt-5">
+        <p>Select a data first.</p>
+        <a href="{{ url_for('browse_data') }}" class="btn btn-primary mt-3">Select Data</a>
+    </div>
+{% else %}
+<input type="hidden" id="fileId" value="{{fileId}}">
+<div id="main-container" style="margin: 0 auto;">
+  <div class="row mb-2">
+    <label for="xAxisSelect" class="col-form-label col-sm-1" style="text-align: right;">X-Axis</label>
+    <div class="col-sm-5">
+      <select class="selectpicker" data-width="100%" multiple data-live-search="true" id="xAxisSelect">
+        {% for header in headers %}
+        <option value="{{ header }}">{{ header }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <label for="yAxisSelect" class="col-form-label col-sm-1" style="text-align: right;">Y-Axis</label>
+    <div class="col-sm-5">
+      <select class="selectpicker" data-width="100%" multiple data-live-search="true" id="yAxisSelect">
+        {% for header in headers %}
+        <option value="{{ header }}">{{ header }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+  <div class="row mb-2">
+    <label for="xAxisSelect" class="col-form-label col-sm-1" style="text-align: right;">Type</label>
+    <div class="col-sm-5">
+      <select class="selectpicker" data-width="100%" id="chartType">
+        <option value="barChart">Bar Chart</option>
+        <option value="lineChart">Line Chart</option>
+        <option value="pieChart">Pie Chart</option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <button type="submit" class="btn btn-primary" id="generateChart">Generate</button>
+    <button type="submit" class="btn btn-primary" id="resetChart">Reset</button>
+    <button type="submit" class="btn btn-primary" id="saveChart">Save</button>
+  </div>
+  <div id="bar_chart" style="height: 500px; min-width: 100%; overflow-x: auto;"></div>
+</div>
+{% endif %}
+{% include 'footer.html' %}

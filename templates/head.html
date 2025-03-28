@@ -1,0 +1,96 @@
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="GreenAnalytica Software">
+<meta name="author" content="GreenAnalytica">
+<meta name="generator" content="Hugo 0.88.1">
+<title>{% if title %}{{ title }}{% else %}GreenAnalytica{% endif %}</title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sidebars/">
+
+<!-- Bootstrap core CSS -->
+<link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap-icons.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap-select.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main.css') }}">
+{% for css_file in css_files %}
+<link rel="stylesheet" href="{{ css_file }}">
+{% endfor %}
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+
+  .card {
+    transition: transform 0.2s;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #fff;
+    height: 100%;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+  .card-title {
+    color: #2c3e50;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .card-text {
+    color: #7f8c8d;
+    font-size: 0.9rem;
+  }
+  .welcome-section {
+    background: linear-gradient(135deg, #006400 0%, #556B2F 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+  }
+  .card-icon {
+    font-size: 2rem;
+    color: #006400;
+    margin-bottom: 1rem;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+  main {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+  }
+  .sidebar {
+    height: 100%;
+    width: 280px;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .content-wrapper {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+  }
+</style>
+
+<!-- Custom styles for this template -->
+<link href="{{ url_for('static', filename='assets/css/sidebars.css') }}" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap-icons.css') }}">
+</head>

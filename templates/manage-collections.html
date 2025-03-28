@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Collections</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <h2 class="mb-4">📁 Manage Collections</h2>
+
+    <!-- Create a New Collection -->
+    <div class="card p-4 mb-4">
+        <h5>Create a New Collection</h5>
+        <form id="createForm" class="row g-2">
+            <div class="col-md-4">
+                <input type="text" name="name" class="form-control" placeholder="Collection Name" required>
+            </div>
+            <div class="col-md-6">
+                <input type="text" name="description" class="form-control" placeholder="Description">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Create</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Upload Files -->
+    <div class="card p-4 mb-4">
+        <h5>Upload Files to a Collection</h5>
+        <form id="uploadForm" enctype="multipart/form-data" class="row g-2">
+            <div class="col-md-4">
+                <select id="uploadSelect" class="form-select" required>
+                    <option value="" disabled selected>Select collection</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <input type="file" name="files[]" class="form-control" multiple required>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-success w-100">Upload</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Collection Actions -->
+    <div class="card p-4">
+        <h5>Collection Actions</h5>
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <select id="actionSelect" class="form-select">
+                    <option value="" disabled selected>Select collection</option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button onclick="navigateTo('view')" class="btn btn-success">View</button>
+            </div>
+            <div class="col-md-auto">
+                <button onclick="navigateTo('analytics')" class="btn btn-info text-white">Analytics</button>
+            </div>
+            <div class="col-md-auto">
+                <button onclick="runClean()" class="btn btn-warning text-dark">Clean</button>
+            </div>
+            <div class="col-md-auto">
+                <button onclick="runDelete()" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="message" class="mt-4"></div>
+</div>
+
+<script>
+    async function fetchCollections() {
+        const res = await fetch('/collections/list');
+        const data = await res.json();
+        const selects = [document.getElementById("uploadSelect"), document.getElementById("actionSelect")];
+        selects.forEach(select => {
+            select.innerHTML = '<option value="" disabled selected>Select collection</option>';
+        });
+        data.forEach(col => {
+            selects.forEach(select => {
+                const option = document.createElement("option");
+                option.value = col.name;
+                option.textContent = col.name;
+                select.appendChild(option);
+            });
+        });
+    }
+
+    function showMessage(msg, type = "success") {
+        document.getElementById("message").innerHTML =
+            `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${msg}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+             </div>`;
+    }
+
+    document.getElementById("createForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const res = await fetch("/collections/create", { method: "POST", body: formData });
+        const result = await res.json();
+        if (res.ok) {
+            showMessage("✅ Collection created successfully.");
+            fetchCollections();
+            e.target.reset();
+        } else {
+            showMessage(result.error || "Something went wrong", "danger");
+        }
+    });
+
+    document.getElementById("uploadForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        const collection = document.getElementById("uploadSelect").value;
+        const res = await fetch(`/collections/${collection}/upload`, {
+            method: "POST",
+            body: formData
+        });
+        const result = await res.json();
+        if (res.ok) {
+            showMessage("✅ Files uploaded successfully.");
+            form.reset();
+        } else {
+            showMessage(result.error || "Upload failed.", "danger");
+        }
+    });
+
+    function navigateTo(action) {
+        const name = document.getElementById("actionSelect").value;
+        if (!name) return;
+        window.location.href = `/collections/${name}/${action}`;
+    }
+
+    async function runClean() {
+        const name = document.getElementById("actionSelect").value;
+        if (!name) return;
+        const res = await fetch(`/collections/${name}/clean`, { method: "POST" });
+        const result = await res.json();
+        showMessage(result.message || "Cleaned.", res.ok ? "success" : "danger");
+    }
+
+    async function runDelete() {
+        const name = document.getElementById("actionSelect").value;
+        if (!name || !confirm("Are you sure you want to delete this collection?")) return;
+        const res = await fetch(`/collections/${name}/delete`, { method: "DELETE" });
+        const result = await res.json();
+        if (res.ok) {
+            showMessage("🗑️ Collection deleted.");
+            fetchCollections();
+        } else {
+            showMessage(result.error || "Deletion failed.", "danger");
+        }
+    }
+
+    fetchCollections();
+</script>
+
+</body>
+</html>
