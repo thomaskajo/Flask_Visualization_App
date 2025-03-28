@@ -1,6 +1,39 @@
 <<<<<<< HEAD
 # Flask Data Visualization
 
+
+This is a Flask-based web application designed for simplified file management, data analysis, and collection-based insights. Users can securely upload datasets, organize them into collections, clean and preview data, and extract meaningful analytics — all through a user-friendly interface.
+
+---
+
+## 🔍 Features
+
+- 🔐 **User Authentication**: Secure login & registration.
+- 📁 **File Upload & Management**: Upload CSV files and group them into named collections.
+- 🧹 **Data Cleaning**: Clean and save updated datasets within the app.
+- 📊 **Collection Analytics**: View summarized analytics and visualizations for any collection.
+- 📂 **Collection Management**: Delete, rename, and clean collections via a clean UI.
+- 💡 **Flask, SQLAlchemy & Jinja2 Integration**.
+
+---
+
+## 🛠 Tech Stack
+
+- **Backend**: Python, Flask, SQLAlchemy
+- **Frontend**: HTML, CSS, Jinja2 Templates
+- **Database**: SQLite
+- **Tools**: VS Code, Git, GitHub
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/thomaskajo/Flask_Visualization_App.git
+cd Flask_Visualization_App
+
+
 This Flask application generates data visualizations from a synthetic dataset.
 
 
